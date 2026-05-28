@@ -6,9 +6,11 @@ Next.js (App Router) dashboard — title aur thumbnail check for Indian YouTube 
 
 ```bash
 cd frontend
-cp .env.local.example .env.local
+cp .env.local.example .env.local   # optional; defaults to http://localhost:8000
 npm install
 ```
+
+Production deploy (Vercel): set `NEXT_PUBLIC_API_URL` to your Render backend URL. See [DEPLOY.md](../DEPLOY.md).
 
 ## Run
 

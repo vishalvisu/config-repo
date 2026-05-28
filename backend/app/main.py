@@ -15,9 +15,10 @@ app = FastAPI(
     version="0.1.0",
 )
 
+_settings = get_settings()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=_settings.cors_origin_list,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -52,6 +53,7 @@ async def log_startup() -> None:
         logger.warning(
             "OpenAI thumbnail images: disabled (set OPENAI_API_KEY in backend/.env)"
         )
+    logger.info("CORS allowed origins: %s", settings.cors_origin_list)
 
 
 @app.get("/health")

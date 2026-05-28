@@ -17,6 +17,7 @@ cp .env.example .env
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
+| `CORS_ORIGINS` | No | `http://localhost:3000` | Comma-separated browser origins allowed to call the API (set your Vercel URL in production). |
 | `GROQ_API_KEY` | No | — | Enables AI title optimization via Groq. If unset, template titles are used. |
 | `GROQ_BASE_URL` | No | `https://api.groq.com/openai/v1` | Groq OpenAI-compatible API base URL |
 | `GROQ_MODEL` | No | `llama-3.3-70b-versatile` | Chat model for title suggestions |
@@ -60,7 +61,7 @@ curl -X POST http://localhost:8000/api/v1/grader/analyze \
   -F "thumbnail=@/path/to/thumb.jpg"
 ```
 
-CORS is enabled for `http://localhost:3000` (Next.js frontend).
+CORS allowed origins come from `CORS_ORIGINS` (default `http://localhost:3000`). On Render, set this to your Vercel URL. See [DEPLOY.md](../DEPLOY.md) at the repo root.
 
 ## AI recommendations (Groq)
 
@@ -94,6 +95,14 @@ If OpenAI fails or is not configured, the API still returns **200** with text co
 | `title_optimization` | Title flaw + `hinglish_alternatives` (3 strings) |
 | `thumbnail_optimization` | Thumbnail flaw, fix, `on_image_text_language`, `thumbnail_alternatives` (1+ concept paragraphs per `THUMBNAIL_GEN_COUNT`), `generated_thumbnails` (0–N images when OpenAI succeeds) |
 | `visual_critique` | Same flaw/fix as thumbnail when Groq vision succeeds; otherwise mock |
+
+## Deploy (Render)
+
+```bash
+uvicorn app.main:app --host 0.0.0.0 --port $PORT
+```
+
+Use root directory `backend`, Python runtime from `runtime.txt`, and env vars from the table above. Full steps: [DEPLOY.md](../DEPLOY.md).
 
 ## Troubleshooting
 
