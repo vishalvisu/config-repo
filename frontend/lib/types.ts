@@ -88,3 +88,36 @@ export interface GraderAnalyzeResponse {
 }
 
 export type AnalyzeStatus = "idle" | "loading" | "success" | "error";
+
+export type PacingStyle = "Fast" | "Balanced" | "Storytelling" | "Tutorial";
+
+export const PACING_STYLES: PacingStyle[] = [
+  "Fast",
+  "Balanced",
+  "Storytelling",
+  "Tutorial",
+];
+
+export interface HookAnalysis {
+  dikkat: string;
+  kya_badlo: string;
+  hook_score: number;
+}
+
+export interface BoredomZone {
+  zone_label: string;
+  start_sentence: number | null;
+  end_sentence: number | null;
+  start_seconds: number | null;
+  end_seconds: number | null;
+  dikkat: string;
+  kya_badlo: string;
+}
+
+export interface ScriptDoctorResponse {
+  hook: HookAnalysis;
+  retention_score: number;
+  overall_feedback: string;
+  pacing_feedback: string;
+  boredom_zones: BoredomZone[];
+}

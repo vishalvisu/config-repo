@@ -1,4 +1,4 @@
-import type { GraderAnalyzeResponse } from "./types";
+import type { GraderAnalyzeResponse, PacingStyle, ScriptDoctorResponse } from "./types";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
@@ -43,4 +43,30 @@ export async function analyzeGrader(
   }
 
   return res.json() as Promise<GraderAnalyzeResponse>;
+}
+
+export async function analyzeScript(payload: {
+  script_text: string;
+  pacing_style: PacingStyle;
+}): Promise<ScriptDoctorResponse> {
+  const res = await fetch(`${API_BASE}/api/v1/script/analyze`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    let message = `Request failed (${res.status})`;
+    try {
+      const body = await res.json();
+      if (body?.detail) {
+        message = formatErrorDetail(body.detail);
+      }
+    } catch {
+      /* use default message */
+    }
+    throw new Error(message);
+  }
+
+  return res.json() as Promise<ScriptDoctorResponse>;
 }

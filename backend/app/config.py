@@ -18,6 +18,11 @@ class Settings(BaseSettings):
     openai_image_size: str = "1536x1024"
     thumbnail_gen_count: int = 1
     openai_timeout_seconds: float = 120.0
+    openrouter_api_key: str | None = None
+    openrouter_base_url: str = "https://openrouter.ai/api/v1"
+    openrouter_model: str = "openai/gpt-4o-mini"
+    openai_text_model: str = "gpt-4o-mini"
+    script_doctor_timeout_seconds: float = 60.0
 
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -40,6 +45,14 @@ class Settings(BaseSettings):
 
     @property
     def openai_images_enabled(self) -> bool:
+        return bool(self.openai_api_key and self.openai_api_key.strip())
+
+    @property
+    def openrouter_enabled(self) -> bool:
+        return bool(self.openrouter_api_key and self.openrouter_api_key.strip())
+
+    @property
+    def openai_text_enabled(self) -> bool:
         return bool(self.openai_api_key and self.openai_api_key.strip())
 
 
