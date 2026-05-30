@@ -10,6 +10,24 @@ class PacingStyle(StrEnum):
     TUTORIAL = "Tutorial"
 
 
+class VideoGenre(StrEnum):
+    TUTORIAL = "Tutorial"
+    REVIEW = "Review"
+    UNBOXING = "Unboxing"
+    VLOG = "Vlog"
+    STORY = "Story"
+    COMMENTARY = "Commentary"
+    EXPLAINER = "Explainer"
+    ENTERTAINMENT = "Entertainment"
+
+
+class ExpectedLength(StrEnum):
+    SHORT = "Under 5 min"
+    MEDIUM = "5–15 min"
+    LONG = "15–30 min"
+    EXTENDED = "30+ min"
+
+
 class HookAnalysis(BaseModel):
     dikkat: str = Field(description="Critique of the opening hook (DIKKAT)")
     kya_badlo: str = Field(
@@ -35,6 +53,9 @@ class BoredomZone(BaseModel):
 class ScriptDoctorRequest(BaseModel):
     script_text: str = Field(min_length=50, max_length=15000)
     pacing_style: PacingStyle
+    target_audience: str = Field(min_length=2, max_length=200)
+    video_genre: VideoGenre
+    expected_length: ExpectedLength
 
 
 class ScriptDoctorResponse(BaseModel):

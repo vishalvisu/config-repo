@@ -5,10 +5,19 @@ import { useMemo, useState } from "react";
 import { HighlightedScriptEditor } from "@/components/script/HighlightedScriptEditor";
 import { COPY } from "@/lib/copy";
 import type { SentenceHighlight } from "@/lib/scriptZones";
-import type { PacingStyle } from "@/lib/types";
-import { PACING_STYLES } from "@/lib/types";
+import type {
+  ExpectedLength,
+  PacingStyle,
+  VideoGenre,
+} from "@/lib/types";
+import {
+  EXPECTED_LENGTHS,
+  PACING_STYLES,
+  VIDEO_GENRES,
+} from "@/lib/types";
 
 const MIN_CHARS = 50;
+const MIN_AUDIENCE_CHARS = 2;
 
 interface ScriptEditorFormProps {
   scriptText: string;
@@ -18,6 +27,9 @@ interface ScriptEditorFormProps {
   onSubmit: (payload: {
     scriptText: string;
     pacingStyle: PacingStyle;
+    targetAudience: string;
+    videoGenre: VideoGenre;
+    expectedLength: ExpectedLength;
   }) => void;
   errorMessage: string | null;
 }
@@ -31,18 +43,30 @@ export function ScriptEditorForm({
   errorMessage,
 }: ScriptEditorFormProps) {
   const [pacingStyle, setPacingStyle] = useState<PacingStyle>("Balanced");
+  const [targetAudience, setTargetAudience] = useState("");
+  const [videoGenre, setVideoGenre] = useState<VideoGenre>("Tutorial");
+  const [expectedLength, setExpectedLength] =
+    useState<ExpectedLength>("5–15 min");
 
   const wordCount = useMemo(
     () => scriptText.trim().split(/\s+/).filter(Boolean).length,
     [scriptText],
   );
 
-  const isValid = scriptText.trim().length >= MIN_CHARS;
+  const isValid =
+    scriptText.trim().length >= MIN_CHARS &&
+    targetAudience.trim().length >= MIN_AUDIENCE_CHARS;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!isValid || isLoading) return;
-    onSubmit({ scriptText: scriptText.trim(), pacingStyle });
+    onSubmit({
+      scriptText: scriptText.trim(),
+      pacingStyle,
+      targetAudience: targetAudience.trim(),
+      videoGenre,
+      expectedLength,
+    });
   };
 
   return (
@@ -83,6 +107,72 @@ export function ScriptEditorForm({
           {!isValid && scriptText.length > 0 && (
             <span className="text-amber-400/90">{COPY.script.minLengthHint}</span>
           )}
+        </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="sm:col-span-2">
+          <label
+            htmlFor="target-audience"
+            className="mb-2 block text-sm font-medium text-zinc-200"
+          >
+            {COPY.script.targetAudience}
+          </label>
+          <input
+            id="target-audience"
+            type="text"
+            value={targetAudience}
+            onChange={(e) => setTargetAudience(e.target.value)}
+            placeholder={COPY.script.targetAudiencePlaceholder}
+            disabled={isLoading}
+            className="w-full rounded-xl border border-zinc-700/80 bg-zinc-950/60 px-4 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-500 focus:border-orange-500/50 focus:outline-none focus:ring-2 focus:ring-orange-500/20 disabled:opacity-60"
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="video-genre"
+            className="mb-2 block text-sm font-medium text-zinc-200"
+          >
+            {COPY.script.videoGenre}
+          </label>
+          <select
+            id="video-genre"
+            value={videoGenre}
+            onChange={(e) => setVideoGenre(e.target.value as VideoGenre)}
+            disabled={isLoading}
+            className="w-full rounded-xl border border-zinc-700/80 bg-zinc-950/60 px-4 py-2.5 text-sm text-zinc-100 focus:border-orange-500/50 focus:outline-none focus:ring-2 focus:ring-orange-500/20 disabled:opacity-60"
+          >
+            {VIDEO_GENRES.map((genre) => (
+              <option key={genre} value={genre}>
+                {genre}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label
+            htmlFor="expected-length"
+            className="mb-2 block text-sm font-medium text-zinc-200"
+          >
+            {COPY.script.expectedLength}
+          </label>
+          <select
+            id="expected-length"
+            value={expectedLength}
+            onChange={(e) =>
+              setExpectedLength(e.target.value as ExpectedLength)
+            }
+            disabled={isLoading}
+            className="w-full rounded-xl border border-zinc-700/80 bg-zinc-950/60 px-4 py-2.5 text-sm text-zinc-100 focus:border-orange-500/50 focus:outline-none focus:ring-2 focus:ring-orange-500/20 disabled:opacity-60"
+          >
+            {EXPECTED_LENGTHS.map((length) => (
+              <option key={length} value={length}>
+                {length}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 

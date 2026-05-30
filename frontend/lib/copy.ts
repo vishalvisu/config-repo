@@ -103,6 +103,11 @@ export const COPY = {
     scriptPlaceholder:
       "Apna spoken script yahan paste karo… (intro, main points, CTA)",
     pacingStyle: "Pacing style",
+    targetAudience: "Target audience",
+    targetAudiencePlaceholder:
+      "e.g. 18–24 Indian tech enthusiasts, Hindi-speaking homemakers…",
+    videoGenre: "Video genre",
+    expectedLength: "Expected video length",
     wordCount: "words",
     minLengthHint: "Kam se kam 50 characters chahiye",
     analyze: "Script analyze karo →",

@@ -1,4 +1,10 @@
-import type { GraderAnalyzeResponse, PacingStyle, ScriptDoctorResponse } from "./types";
+import type {
+  ExpectedLength,
+  GraderAnalyzeResponse,
+  PacingStyle,
+  ScriptDoctorResponse,
+  VideoGenre,
+} from "./types";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
@@ -48,6 +54,9 @@ export async function analyzeGrader(
 export async function analyzeScript(payload: {
   script_text: string;
   pacing_style: PacingStyle;
+  target_audience: string;
+  video_genre: VideoGenre;
+  expected_length: ExpectedLength;
 }): Promise<ScriptDoctorResponse> {
   const res = await fetch(`${API_BASE}/api/v1/script/analyze`, {
     method: "POST",

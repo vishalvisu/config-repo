@@ -98,6 +98,40 @@ export const PACING_STYLES: PacingStyle[] = [
   "Tutorial",
 ];
 
+export type VideoGenre =
+  | "Tutorial"
+  | "Review"
+  | "Unboxing"
+  | "Vlog"
+  | "Story"
+  | "Commentary"
+  | "Explainer"
+  | "Entertainment";
+
+export const VIDEO_GENRES: VideoGenre[] = [
+  "Tutorial",
+  "Review",
+  "Unboxing",
+  "Vlog",
+  "Story",
+  "Commentary",
+  "Explainer",
+  "Entertainment",
+];
+
+export type ExpectedLength =
+  | "Under 5 min"
+  | "5–15 min"
+  | "15–30 min"
+  | "30+ min";
+
+export const EXPECTED_LENGTHS: ExpectedLength[] = [
+  "Under 5 min",
+  "5–15 min",
+  "15–30 min",
+  "30+ min",
+];
+
 export interface HookAnalysis {
   dikkat: string;
   kya_badlo: string;

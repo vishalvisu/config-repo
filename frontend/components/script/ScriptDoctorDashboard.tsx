@@ -15,8 +15,10 @@ import {
 import type {
   AnalyzeStatus,
   BoredomZone,
+  ExpectedLength,
   PacingStyle,
   ScriptDoctorResponse,
+  VideoGenre,
 } from "@/lib/types";
 
 export function ScriptDoctorDashboard() {
@@ -33,7 +35,13 @@ export function ScriptDoctorDashboard() {
   const activeHighlight = pinnedHighlight ?? hoverHighlight;
 
   const handleSubmit = useCallback(
-    async (payload: { scriptText: string; pacingStyle: PacingStyle }) => {
+    async (payload: {
+      scriptText: string;
+      pacingStyle: PacingStyle;
+      targetAudience: string;
+      videoGenre: VideoGenre;
+      expectedLength: ExpectedLength;
+    }) => {
       setStatus("loading");
       setErrorMessage(null);
       setHoverHighlight(null);
@@ -44,6 +52,9 @@ export function ScriptDoctorDashboard() {
         const data = await analyzeScript({
           script_text: payload.scriptText,
           pacing_style: payload.pacingStyle,
+          target_audience: payload.targetAudience,
+          video_genre: payload.videoGenre,
+          expected_length: payload.expectedLength,
         });
         setResult(data);
         setStatus("success");
