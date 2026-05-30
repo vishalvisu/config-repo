@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { HeaderContact } from "@/components/ContactSection";
+import { SeoJsonLd } from "@/components/SeoJsonLd";
 import { COPY } from "@/lib/copy";
+import { SEO } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
@@ -17,23 +19,40 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: COPY.meta.title,
-  description: COPY.meta.description,
+  title: {
+    default: SEO.title,
+    template: `%s | ${SEO.siteName}`,
+  },
+  description: SEO.description,
+  keywords: [...SEO.keywords],
+  applicationName: SEO.siteName,
+  authors: [{ name: SEO.siteName, url: SITE_URL }],
+  creator: SEO.siteName,
   alternates: {
     canonical: "/",
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   openGraph: {
-    title: COPY.meta.title,
-    description: COPY.meta.description,
+    title: SEO.title,
+    description: SEO.description,
     url: SITE_URL,
-    siteName: COPY.brand.header,
-    locale: "en_IN",
+    siteName: SEO.siteName,
+    locale: SEO.locale,
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: COPY.meta.title,
-    description: COPY.meta.description,
+    title: SEO.title,
+    description: SEO.description,
   },
 };
 
@@ -44,10 +63,11 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="en-IN"
       className={`dark ${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="page-bg min-h-full font-sans text-zinc-100">
+        <SeoJsonLd />
         <div className="border-b border-orange-500/20 bg-gradient-to-r from-orange-950/40 via-purple-950/30 to-teal-950/40 backdrop-blur-md">
           <header className="mx-auto flex max-w-6xl items-start justify-between gap-4 px-4 py-4 sm:items-center sm:px-6">
             <div className="flex min-w-0 items-center gap-3">
@@ -72,6 +92,9 @@ export default function RootLayout({
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-zinc-300/90">
               {COPY.hero.subtitle}
+            </p>
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-zinc-400/90">
+              {COPY.seoIntro}
             </p>
           </div>
           {children}

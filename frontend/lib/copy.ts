@@ -9,10 +9,12 @@ export const COPY = {
     header: APP_HEADLINE,
   },
   meta: {
-    title: "Title & Thumbnail Check",
+    title: "YouTube Title & Thumbnail Checker for Indian Creators | ClickKaro",
     description:
-      "Indian YouTube creators ke liye title aur thumbnail check — CTR grade aur suggestions",
+      "Free YouTube title checker and thumbnail analyzer for Indian creators. Get CTR grade, Hinglish title ideas, AI thumbnail tips, and packaging scores — Title aur Thumbnail Check.",
   },
+  seoIntro:
+    "Free YouTube title checker and thumbnail analyzer built for Indian creators. Upload your thumbnail, get a CTR grade, Hinglish title suggestions, and AI-powered thumbnail tips in one place.",
   hero: {
     eyebrow: "🇮🇳 Creator dashboard",
     title: APP_HEADLINE,
