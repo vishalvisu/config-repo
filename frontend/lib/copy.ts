@@ -22,6 +22,13 @@ export const COPY = {
       "Apne video ka packaging Indian audience ke liye optimize karo — behtar title ideas, thumbnail tips, aur CTR grade ek hi jagah.",
     madeFor: "Made for Indian creators",
   },
+  heroScript: {
+    title: "Script Checker",
+    subtitle:
+      "Apne video script ka hook aur retention check karo — hook score, boredom zones, aur KYA BADLO suggestions ek hi jagah.",
+    seoIntro:
+      "Free YouTube script checker for Indian creators. Paste your spoken script, get hook score, retention score, boredom zones, and copy-ready KYA BADLO rewrites.",
+  },
   form: {
     cardTitle: "Video packaging check",
     cardSubtitle:
@@ -81,6 +88,44 @@ export const COPY = {
     email: "vk85243@gmail.com",
     phone: "7543990177",
     phoneDisplay: "+91 75439 90177",
+  },
+  tabs: {
+    packaging: "Title & Thumbnail Check",
+    script: "Script Checker",
+  },
+  script: {
+    cardTitle: "Hook-to-Retention Script Checker",
+    cardSubtitle:
+      "Apna video script paste karo — hook score, boredom zones, aur KYA BADLO suggestions milenge.",
+    textOnlyNote:
+      "Text-only analysis — boredom zones use sentence numbers from your script, not video timestamps.",
+    scriptLabel: "Video script",
+    scriptPlaceholder:
+      "Apna spoken script yahan paste karo… (intro, main points, CTA)",
+    pacingStyle: "Pacing style",
+    wordCount: "words",
+    minLengthHint: "Kam se kam 50 characters chahiye",
+    analyze: "Script analyze karo →",
+    analyzing: "Script check ho raha hai…",
+    diagnosticsTitle: "Retention diagnostics",
+    diagnosticsSubtitle:
+      "Hook review aur boredom zones — DIKKAT aur KYA BADLO cards",
+    diagnosticsTextOnlyNote:
+      "Zones reference sentence numbers in your pasted script (no video uploaded).",
+    emptyTitle: "Diagnostics yahan dikhenge",
+    emptyBody:
+      "Script paste karo aur analyze karo — hook score, retention score, aur boredom zones milenge.",
+    hookHeading: "Opening hook",
+    hookScore: "Hook score",
+    retentionScore: "Retention score",
+    overallFeedback: "Overall feedback",
+    pacingFeedback: "Pacing feedback",
+    boredomZones: "Boredom zones",
+    zoneHighlightHint:
+      "Hover or click a boredom zone to highlight sentences in your script.",
+    dikkat: "Dikkat",
+    kyaBadlo: "Kya badlo",
+    copyRewrite: "Copy Rewrite",
   },
 } as const;
 
