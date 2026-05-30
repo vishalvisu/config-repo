@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { HeaderContact } from "@/components/ContactSection";
 import { COPY } from "@/lib/copy";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -15,8 +16,25 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: COPY.meta.title,
   description: COPY.meta.description,
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: COPY.meta.title,
+    description: COPY.meta.description,
+    url: SITE_URL,
+    siteName: COPY.brand.header,
+    locale: "en_IN",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: COPY.meta.title,
+    description: COPY.meta.description,
+  },
 };
 
 export default function RootLayout({
