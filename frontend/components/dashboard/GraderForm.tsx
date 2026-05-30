@@ -2,8 +2,8 @@
 
 import { useCallback, useRef, useState } from "react";
 import { COPY } from "@/lib/copy";
-import type { Language, Niche } from "@/lib/types";
-import { LANGUAGE_GROUPS, NICHES } from "@/lib/types";
+import type { Language, VideoCategory } from "@/lib/types";
+import { LANGUAGE_GROUPS, VIDEO_CATEGORIES } from "@/lib/types";
 
 interface GraderFormProps {
   isLoading: boolean;
@@ -12,7 +12,7 @@ interface GraderFormProps {
   onSubmit: (payload: {
     title: string;
     videoContext: string;
-    niche: Niche;
+    category: VideoCategory;
     language: Language;
     file: File;
   }) => void;
@@ -28,7 +28,7 @@ export function GraderForm({
 }: GraderFormProps) {
   const [title, setTitle] = useState("");
   const [videoContext, setVideoContext] = useState("");
-  const [niche, setNiche] = useState<Niche>("Tech");
+  const [category, setCategory] = useState<VideoCategory>("Tech");
   const [language, setLanguage] = useState<Language>("Hinglish");
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -68,7 +68,7 @@ export function GraderForm({
     onSubmit({
       title: title.trim(),
       videoContext: videoContext.trim(),
-      niche,
+      category,
       language,
       file,
     });
@@ -140,20 +140,20 @@ export function GraderForm({
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label
-              htmlFor="niche"
+              htmlFor="category"
               className="mb-1.5 block text-sm font-medium text-teal-200/90"
             >
-              {COPY.form.niche}
+              {COPY.form.category}
             </label>
             <select
-              id="niche"
-              value={niche}
-              onChange={(e) => setNiche(e.target.value as Niche)}
+              id="category"
+              value={category}
+              onChange={(e) => setCategory(e.target.value as VideoCategory)}
               className="w-full rounded-lg border border-teal-500/30 bg-zinc-950/90 px-4 py-2.5 text-zinc-100 focus:border-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-400/30"
             >
-              {NICHES.map((n) => (
-                <option key={n} value={n}>
-                  {n}
+              {VIDEO_CATEGORIES.map((option) => (
+                <option key={option} value={option}>
+                  {option}
                 </option>
               ))}
             </select>

@@ -2,23 +2,14 @@ from enum import StrEnum
 
 from pydantic import BaseModel, Field
 
+from app.schemas.category import VideoCategory
+
 
 class PacingStyle(StrEnum):
     FAST = "Fast"
     BALANCED = "Balanced"
     STORYTELLING = "Storytelling"
     TUTORIAL = "Tutorial"
-
-
-class VideoGenre(StrEnum):
-    TUTORIAL = "Tutorial"
-    REVIEW = "Review"
-    UNBOXING = "Unboxing"
-    VLOG = "Vlog"
-    STORY = "Story"
-    COMMENTARY = "Commentary"
-    EXPLAINER = "Explainer"
-    ENTERTAINMENT = "Entertainment"
 
 
 class ExpectedLength(StrEnum):
@@ -54,7 +45,7 @@ class ScriptDoctorRequest(BaseModel):
     script_text: str = Field(min_length=50, max_length=15000)
     pacing_style: PacingStyle
     target_audience: str = Field(min_length=2, max_length=200)
-    video_genre: VideoGenre
+    category: VideoCategory
     expected_length: ExpectedLength
 
 

@@ -18,7 +18,7 @@ import type {
   ExpectedLength,
   PacingStyle,
   ScriptDoctorResponse,
-  VideoGenre,
+  VideoCategory,
 } from "@/lib/types";
 
 export function ScriptDoctorDashboard() {
@@ -39,7 +39,7 @@ export function ScriptDoctorDashboard() {
       scriptText: string;
       pacingStyle: PacingStyle;
       targetAudience: string;
-      videoGenre: VideoGenre;
+      category: VideoCategory;
       expectedLength: ExpectedLength;
     }) => {
       setStatus("loading");
@@ -53,7 +53,7 @@ export function ScriptDoctorDashboard() {
           script_text: payload.scriptText,
           pacing_style: payload.pacingStyle,
           target_audience: payload.targetAudience,
-          video_genre: payload.videoGenre,
+          category: payload.category,
           expected_length: payload.expectedLength,
         });
         setResult(data);

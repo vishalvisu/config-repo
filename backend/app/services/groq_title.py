@@ -4,7 +4,8 @@ import logging
 from openai import APIError, APITimeoutError, AsyncOpenAI
 
 from app.config import get_settings
-from app.schemas.grader import Language, Niche, TitleOptimization
+from app.schemas.category import VideoCategory
+from app.schemas.grader import Language, TitleOptimization
 
 logger = logging.getLogger(__name__)
 
@@ -37,12 +38,12 @@ Rules:
 
 def _user_prompt(
     title: str,
-    niche: Niche,
+    category: VideoCategory,
     language: Language,
     video_context: str | None = None,
 ) -> str:
     parts = [
-        f"Niche: {niche.value}",
+        f"Category: {category.value}",
         f"Target language: {language.value}",
         f"Draft title: {title}",
     ]
@@ -63,21 +64,14 @@ def _parse_response(content: str) -> TitleOptimization:
         raise GroqTitleError(f"Invalid JSON from Groq: {e}") from e
 
     try:
-        result = TitleOptimization.model_validate(data)
+        return TitleOptimization.model_validate(data)
     except Exception as e:
         raise GroqTitleError(f"Response validation failed: {e}") from e
-
-    if len(result.hinglish_alternatives) != 3:
-        raise GroqTitleError(
-            f"Expected 3 alternatives, got {len(result.hinglish_alternatives)}"
-        )
-
-    return result
 
 
 async def optimize_title(
     title: str,
-    niche: Niche,
+    category: VideoCategory,
     language: Language,
     video_context: str | None = None,
 ) -> TitleOptimization:
@@ -98,7 +92,9 @@ async def optimize_title(
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {
                     "role": "user",
-                    "content": _user_prompt(title, niche, language, video_context),
+                    "content": _user_prompt(
+                        title, category, language, video_context
+                    ),
                 },
             ],
             response_format={"type": "json_object"},
@@ -115,8 +111,9 @@ async def optimize_title(
 
     result = _parse_response(content)
     logger.info(
-        "Groq title optimization succeeded (model=%s, language=%s)",
+        "Groq title optimization succeeded (model=%s, language=%s, category=%s)",
         settings.groq_model,
         language.value,
+        category.value,
     )
     return result

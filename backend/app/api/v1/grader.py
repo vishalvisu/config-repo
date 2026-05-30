@@ -1,6 +1,7 @@
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 
-from app.schemas.grader import GraderAnalyzeResponse, Language, Niche
+from app.schemas.category import VideoCategory
+from app.schemas.grader import GraderAnalyzeResponse, Language
 from app.services.grader import analyze_submission
 
 router = APIRouter(prefix="/grader", tags=["grader"])
@@ -32,7 +33,7 @@ def _validate_thumbnail(filename: str | None, content_type: str | None) -> None:
 @router.post("/analyze", response_model=GraderAnalyzeResponse)
 async def analyze_grader(
     title: str = Form(..., min_length=1, max_length=500),
-    niche: Niche = Form(...),
+    category: VideoCategory = Form(...),
     language: Language = Form(...),
     thumbnail: UploadFile = File(...),
     video_context: str | None = Form(
@@ -53,7 +54,7 @@ async def analyze_grader(
 
     _, response = await analyze_submission(
         title=title.strip(),
-        niche=niche,
+        category=category,
         language=language,
         image_bytes=image_bytes,
         content_type=thumbnail.content_type,

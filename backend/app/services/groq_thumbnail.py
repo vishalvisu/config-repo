@@ -4,7 +4,8 @@ import logging
 from openai import APIError, APITimeoutError, AsyncOpenAI
 
 from app.config import get_settings
-from app.schemas.grader import Language, Niche, ThumbnailOptimization
+from app.schemas.category import VideoCategory
+from app.schemas.grader import Language, ThumbnailOptimization
 
 logger = logging.getLogger(__name__)
 
@@ -53,12 +54,12 @@ def _normalize_mime(content_type: str | None) -> str:
 
 def _user_text(
     title: str,
-    niche: Niche,
+    category: VideoCategory,
     language: Language,
     video_context: str | None,
 ) -> str:
     parts = [
-        f"Niche: {niche.value}",
+        f"Category: {category.value}",
         f"Form language (fallback when upload has no on-image text): {language.value}",
         f"Video title: {title}",
     ]
@@ -104,7 +105,7 @@ async def recommend_thumbnail(
     image_b64: str,
     mime_type: str | None,
     title: str,
-    niche: Niche,
+    category: VideoCategory,
     language: Language,
     video_context: str | None = None,
 ) -> ThumbnailOptimization:
@@ -120,7 +121,10 @@ async def recommend_thumbnail(
     )
 
     user_content: list[dict] = [
-        {"type": "text", "text": _user_text(title, niche, language, video_context)},
+        {
+            "type": "text",
+            "text": _user_text(title, category, language, video_context),
+        },
         {
             "type": "image_url",
             "image_url": {"url": f"data:{mime};base64,{image_b64}"},
@@ -149,9 +153,9 @@ async def recommend_thumbnail(
 
     result = _parse_response(content, alt_count)
     logger.info(
-        "Groq thumbnail recommendation succeeded (model=%s, niche=%s, on_image_lang=%s)",
+        "Groq thumbnail recommendation succeeded (model=%s, category=%s, on_image_lang=%s)",
         settings.groq_vision_model,
-        niche.value,
+        category.value,
         result.on_image_text_language,
     )
     return result

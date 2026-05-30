@@ -8,12 +8,12 @@ import type { SentenceHighlight } from "@/lib/scriptZones";
 import type {
   ExpectedLength,
   PacingStyle,
-  VideoGenre,
+  VideoCategory,
 } from "@/lib/types";
 import {
   EXPECTED_LENGTHS,
   PACING_STYLES,
-  VIDEO_GENRES,
+  VIDEO_CATEGORIES,
 } from "@/lib/types";
 
 const MIN_CHARS = 50;
@@ -28,7 +28,7 @@ interface ScriptEditorFormProps {
     scriptText: string;
     pacingStyle: PacingStyle;
     targetAudience: string;
-    videoGenre: VideoGenre;
+    category: VideoCategory;
     expectedLength: ExpectedLength;
   }) => void;
   errorMessage: string | null;
@@ -44,7 +44,7 @@ export function ScriptEditorForm({
 }: ScriptEditorFormProps) {
   const [pacingStyle, setPacingStyle] = useState<PacingStyle>("Balanced");
   const [targetAudience, setTargetAudience] = useState("");
-  const [videoGenre, setVideoGenre] = useState<VideoGenre>("Tutorial");
+  const [category, setCategory] = useState<VideoCategory>("Tutorial");
   const [expectedLength, setExpectedLength] =
     useState<ExpectedLength>("5–15 min");
 
@@ -64,7 +64,7 @@ export function ScriptEditorForm({
       scriptText: scriptText.trim(),
       pacingStyle,
       targetAudience: targetAudience.trim(),
-      videoGenre,
+      category,
       expectedLength,
     });
   };
@@ -131,21 +131,21 @@ export function ScriptEditorForm({
 
         <div>
           <label
-            htmlFor="video-genre"
+            htmlFor="script-category"
             className="mb-2 block text-sm font-medium text-zinc-200"
           >
-            {COPY.script.videoGenre}
+            {COPY.script.category}
           </label>
           <select
-            id="video-genre"
-            value={videoGenre}
-            onChange={(e) => setVideoGenre(e.target.value as VideoGenre)}
+            id="script-category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value as VideoCategory)}
             disabled={isLoading}
             className="w-full rounded-xl border border-zinc-700/80 bg-zinc-950/60 px-4 py-2.5 text-sm text-zinc-100 focus:border-orange-500/50 focus:outline-none focus:ring-2 focus:ring-orange-500/20 disabled:opacity-60"
           >
-            {VIDEO_GENRES.map((genre) => (
-              <option key={genre} value={genre}>
-                {genre}
+            {VIDEO_CATEGORIES.map((option) => (
+              <option key={option} value={option}>
+                {option}
               </option>
             ))}
           </select>

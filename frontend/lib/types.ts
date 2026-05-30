@@ -1,5 +1,33 @@
 export type CtrGrade = "A" | "B" | "C" | "D" | "F";
 
+export const VIDEO_CATEGORIES = [
+  "Tech",
+  "Gaming",
+  "Finance",
+  "Comedy",
+  "Infotainment",
+  "Tutorial",
+  "Review",
+  "Unboxing",
+  "Vlog",
+  "Story",
+  "Commentary",
+  "Explainer",
+  "Entertainment",
+  "Podcasts",
+  "Travel",
+  "Business & Startups",
+  "Fitness & Health",
+  "Career & Education",
+  "Automobile",
+  "Geek Culture",
+  "Fashion & Lifestyle",
+  "News",
+  "Discussion",
+] as const;
+
+export type VideoCategory = (typeof VIDEO_CATEGORIES)[number];
+
 export type Niche =
   | "Tech"
   | "Gaming"

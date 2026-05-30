@@ -12,6 +12,6 @@ async def analyze_script_doctor(body: ScriptDoctorRequest) -> ScriptDoctorRespon
         script_text=body.script_text.strip(),
         pacing_style=body.pacing_style,
         target_audience=body.target_audience.strip(),
-        video_genre=body.video_genre,
+        category=body.category,
         expected_length=body.expected_length,
     )

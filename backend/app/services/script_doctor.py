@@ -5,13 +5,13 @@ import re
 from openai import APIError, APITimeoutError, AsyncOpenAI
 
 from app.config import get_settings
+from app.schemas.category import VideoCategory
 from app.schemas.script import (
     BoredomZone,
     ExpectedLength,
     HookAnalysis,
     PacingStyle,
     ScriptDoctorResponse,
-    VideoGenre,
 )
 
 logger = logging.getLogger(__name__)
@@ -61,8 +61,9 @@ Rules:
 - Hook analysis must focus on sentences 1–3 (the opening), not video timestamps.
 - Match feedback to pacing_style: Fast = tight hooks, no filler; Balanced = mix;
   Storytelling = emotional arc; Tutorial = clear steps, early value promise.
-- Tailor all feedback to target_audience, video_genre, and expected_length from the user prompt.
-  Judge hook strength, pacing density, and boredom zones for that audience and runtime.
+- Tailor all feedback to target_audience, category, and expected_length
+  from the user prompt. Judge hook strength, pacing density, and boredom zones for that
+  audience, category, and runtime.
 - Use Hinglish-friendly tone when the script mixes Hindi and English; otherwise match script language.
 - hook_score and retention_score must be integers 0-100."""
 
@@ -89,13 +90,13 @@ def _user_prompt(
     script_text: str,
     pacing_style: PacingStyle,
     target_audience: str,
-    video_genre: VideoGenre,
+    category: VideoCategory,
     expected_length: ExpectedLength,
 ) -> str:
     numbered, sentence_count = _numbered_script(script_text)
     return (
         f"Target audience: {target_audience}\n"
-        f"Video genre: {video_genre.value}\n"
+        f"Category: {category.value}\n"
         f"Expected video length: {expected_length.value}\n"
         f"Pacing style: {pacing_style.value}\n\n"
         "Text-only script (no video). "
@@ -103,7 +104,7 @@ def _user_prompt(
         "Use sentence numbers from the numbered script below for all boredom_zones.\n\n"
         f"Numbered script:\n{numbered}\n\n"
         "Analyze hook (sentences 1–3), retention, and boredom zones for this audience, "
-        "genre, and expected length. Return JSON only.\n"
+        "category, and expected length. Return JSON only.\n"
         "Every kya_badlo must include a quoted concrete rewrite example (not advice-only)."
     )
 
@@ -166,7 +167,7 @@ def _template_response(
     script_text: str,
     pacing_style: PacingStyle,
     target_audience: str,
-    video_genre: VideoGenre,
+    category: VideoCategory,
     expected_length: ExpectedLength,
 ) -> ScriptDoctorResponse:
     """Heuristic fallback when AI is unavailable or fails."""
@@ -247,12 +248,12 @@ def _template_response(
         retention_score=retention_score,
         overall_feedback=(
             f"Template analysis ({word_count} words, {sentence_count} sentences) "
-            f"for {video_genre.value} aimed at {target_audience}. "
+            f"for {category.value} aimed at {target_audience}. "
             "AI unavailable — configure OPENROUTER_API_KEY or GROQ_API_KEY for deeper review. "
             f"Sample opening: “{first_block[:120]}…”"
         ),
         pacing_feedback=(
-            f"Requested style: {pacing_style.value}; genre: {video_genre.value}; "
+            f"Requested style: {pacing_style.value}; category: {category.value}; "
             f"target length: {expected_length.value}. "
             "Break long sections and front-load the hook for Indian mobile viewers."
         ),
@@ -264,10 +265,11 @@ async def analyze_script(
     script_text: str,
     pacing_style: PacingStyle,
     target_audience: str,
-    video_genre: VideoGenre,
+    category: VideoCategory,
     expected_length: ExpectedLength,
 ) -> ScriptDoctorResponse:
     settings = get_settings()
+    ctx = (target_audience, category, expected_length)
 
     if not (
         settings.openrouter_enabled
@@ -275,9 +277,7 @@ async def analyze_script(
         or settings.openai_text_enabled
     ):
         logger.warning("Script Doctor: no LLM key — using template fallback")
-        return _template_response(
-            script_text, pacing_style, target_audience, video_genre, expected_length
-        )
+        return _template_response(script_text, pacing_style, *ctx)
 
     client, model, provider = _resolve_llm()
 
@@ -289,11 +289,7 @@ async def analyze_script(
                 {
                     "role": "user",
                     "content": _user_prompt(
-                        script_text,
-                        pacing_style,
-                        target_audience,
-                        video_genre,
-                        expected_length,
+                        script_text, pacing_style, *ctx
                     ),
                 },
             ],
@@ -302,31 +298,23 @@ async def analyze_script(
         )
     except APITimeoutError:
         logger.warning("Script Doctor %s timeout — using template fallback", provider)
-        return _template_response(
-            script_text, pacing_style, target_audience, video_genre, expected_length
-        )
+        return _template_response(script_text, pacing_style, *ctx)
     except APIError as e:
         logger.warning(
             "Script Doctor %s API error: %s — using template fallback", provider, e
         )
-        return _template_response(
-            script_text, pacing_style, target_audience, video_genre, expected_length
-        )
+        return _template_response(script_text, pacing_style, *ctx)
 
     content = completion.choices[0].message.content
     if not content:
         logger.warning("Script Doctor empty response — using template fallback")
-        return _template_response(
-            script_text, pacing_style, target_audience, video_genre, expected_length
-        )
+        return _template_response(script_text, pacing_style, *ctx)
 
     try:
         result = _parse_response(content)
     except ScriptDoctorError:
         logger.warning("Script Doctor parse failed — using template fallback")
-        return _template_response(
-            script_text, pacing_style, target_audience, video_genre, expected_length
-        )
+        return _template_response(script_text, pacing_style, *ctx)
 
     logger.info("Script Doctor succeeded (provider=%s, model=%s)", provider, model)
     return result

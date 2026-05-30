@@ -1,9 +1,10 @@
 import type {
   ExpectedLength,
   GraderAnalyzeResponse,
+  Language,
   PacingStyle,
   ScriptDoctorResponse,
-  VideoGenre,
+  VideoCategory,
 } from "./types";
 
 const API_BASE =
@@ -55,7 +56,7 @@ export async function analyzeScript(payload: {
   script_text: string;
   pacing_style: PacingStyle;
   target_audience: string;
-  video_genre: VideoGenre;
+  category: VideoCategory;
   expected_length: ExpectedLength;
 }): Promise<ScriptDoctorResponse> {
   const res = await fetch(`${API_BASE}/api/v1/script/analyze`, {

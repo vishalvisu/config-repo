@@ -14,6 +14,7 @@ from app.schemas.grader import (
     TitleOptimization,
     VisualCritique,
 )
+from app.schemas.category import VideoCategory, category_to_niche
 from app.config import get_settings
 from app.services.groq_thumbnail import recommend_thumbnail
 from app.services.groq_title import optimize_title
@@ -420,22 +421,25 @@ def build_mock_response(
 
 async def analyze_submission(
     title: str,
-    niche: Niche,
+    category: VideoCategory,
     language: Language,
     image_bytes: bytes,
     content_type: str | None,
     video_context: str | None = None,
 ) -> tuple[str, GraderAnalyzeResponse]:
+    niche = category_to_niche(category)
     b64 = base64.b64encode(image_bytes).decode("ascii")
     response = build_mock_response(title, niche, language, len(image_bytes))
 
     title_result, thumb_result = await asyncio.gather(
-        optimize_title(title, niche, language, video_context=video_context),
+        optimize_title(
+            title, category, language, video_context=video_context
+        ),
         recommend_thumbnail(
             b64,
             content_type,
             title,
-            niche,
+            category,
             language,
             video_context=video_context,
         ),

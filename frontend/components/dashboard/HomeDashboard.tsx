@@ -9,7 +9,7 @@ import type {
   AnalyzeStatus,
   GraderAnalyzeResponse,
   Language,
-  Niche,
+  VideoCategory,
 } from "@/lib/types";
 
 export function HomeDashboard() {
@@ -26,7 +26,7 @@ export function HomeDashboard() {
     async (payload: {
       title: string;
       videoContext: string;
-      niche: Niche;
+      category: VideoCategory;
       language: Language;
       file: File;
     }) => {
@@ -40,7 +40,7 @@ export function HomeDashboard() {
       if (payload.videoContext) {
         formData.append("video_context", payload.videoContext);
       }
-      formData.append("niche", payload.niche);
+      formData.append("category", payload.category);
       formData.append("language", payload.language);
       formData.append("thumbnail", payload.file);
 
